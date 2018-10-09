@@ -36,12 +36,7 @@ public class CameraActivity extends AppCompatActivity {
                 null,
                 null,
                 (data, camera) -> {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    if (bitmap == null) {
-                        Toast.makeText(CameraActivity.this, "Captured image is empty", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
+                        Toast.makeText(CameraActivity.this, "Photo captured", Toast.LENGTH_LONG).show();
                 });
     }
 }
