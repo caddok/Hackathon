@@ -2,18 +2,13 @@ package com.example.georgi.projecthackathon;
 
 import android.Manifest;
 import android.content.Intent;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.ActionMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import com.example.georgi.projecthackathon.camera.cam.take.CameraActivity;
 import com.example.georgi.projecthackathon.camera.cam.take.CameraUtils;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -37,8 +32,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         mTakePicture = findViewById(R.id.take_picture_btn);
         mSendPicture = findViewById(R.id.send_picture_btn);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         if (!CameraUtils.isDeviceSupportCamera(getApplicationContext())) {
             Toast.makeText(getApplicationContext(),
@@ -58,9 +51,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.take_picture_btn:
                 if (requestCameraPermission()) {
-                    intent = prepFile();
-                    //intent = new Intent(this,CameraActivity.class);
-                    startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePictureIntent,CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
                 }
                 break;
             case R.id.send_picture_btn:
@@ -99,17 +91,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }).show();
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             // Refreshing the gallery
+            File photo = (File) data.getExtras().get("data");
             imageStoragePath = CameraUtils.KEY_IMAGE_STORAGE_PATH;
             CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
 
-            // successfully captured the image
-            // display it in image view
         } else if (resultCode == RESULT_CANCELED) {
             // user cancelled Image capture
             Toast.makeText(getApplicationContext(),
