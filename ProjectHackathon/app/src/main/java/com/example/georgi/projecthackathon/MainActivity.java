@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.ActionMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -98,19 +99,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }).show();
     }
 
-    private Intent prepFile() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        File file = CameraUtils.getOutputMediaFile();
-        if (file != null) {
-            imageStoragePath = file.getAbsolutePath();
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            // Refreshing the gallery
+            imageStoragePath = CameraUtils.KEY_IMAGE_STORAGE_PATH;
+            CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
+
+            // successfully captured the image
+            // display it in image view
+        } else if (resultCode == RESULT_CANCELED) {
+            // user cancelled Image capture
+            Toast.makeText(getApplicationContext(),
+                    "User cancelled image capture", Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            // failed to capture image
+            Toast.makeText(getApplicationContext(),
+                    "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
+                    .show();
         }
-
-        Uri fileUri = CameraUtils.getOutputMediaFileUri(getApplicationContext(), file);
-
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-
-        return intent;
     }
-
 }

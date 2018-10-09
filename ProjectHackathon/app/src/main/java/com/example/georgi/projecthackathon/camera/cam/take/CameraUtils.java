@@ -27,7 +27,7 @@ public class CameraUtils {
     private static final String GALLERY_DIRECTORY_NAME = "Camera Demo";
 
     // key to store image path in savedInstance state
-    static final String KEY_IMAGE_STORAGE_PATH = "image_path";
+    public static final String KEY_IMAGE_STORAGE_PATH = "image_path";
 
     // Bitmap sampling size
     static final int BITMAP_SAMPLE_SIZE = 8;
