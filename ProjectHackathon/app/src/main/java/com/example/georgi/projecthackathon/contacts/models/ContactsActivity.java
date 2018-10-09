@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.georgi.projecthackathon.R;
 
-import org.w3c.dom.Text;
 
 public class ContactsActivity extends AppCompatActivity {
 
