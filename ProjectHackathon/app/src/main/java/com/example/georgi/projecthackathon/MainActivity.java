@@ -32,6 +32,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final int CONTACTS_REQUEST_CODE = 1;
+    private static final int PHOTO_PICK_REQUEST_CODE = 2;
     private Button mTakePicture;
     private Button mSendPicture;
     private String imageStoragePath;
@@ -67,10 +68,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.send_picture_btn:
                 if (requestContactsPermission()) {
-                    Intent intent2 = new Intent(Intent.ACTION_PICK,
-                            Uri.fromFile(Environment.getExternalStoragePublicDirectory(CameraUtils.GALLERY_DIRECTORY_NAME)));
+
                     Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                    startActivityForResult(intent, CONTACTS_REQUEST_CODE);
+                    startActivityForResult(intent,CONTACTS_REQUEST_CODE);
+
                 }
                 break;
         }
@@ -146,10 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case CAMERA_CAPTURE_IMAGE_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     // Refreshing the gallery
-                    File photo = (File) data.getExtras().get("data");
-                    imageStoragePath = CameraUtils.KEY_IMAGE_STORAGE_PATH;
-                    CameraUtils.refreshGallery(getApplicationContext(), imageStoragePath);
-
+                    galleryAddPic();
                 } else if (resultCode == RESULT_CANCELED) {
                     // user cancelled Image capture
                     Toast.makeText(getApplicationContext(),
@@ -162,38 +160,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .show();
                 }
                 break;
-            case CONTACTS_REQUEST_CODE:
+            case PHOTO_PICK_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    Uri contactData = data.getData();
-                    Cursor c = getContentResolver().query(contactData, null, null, null, null);
-                    if (c.moveToFirst()) {
-                        String phoneNumber = "";
-                        String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
+                    Toast.makeText(getApplicationContext(), "Photo sent", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            case CONTACTS_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    startActivityForResult(intent, PHOTO_PICK_REQUEST_CODE);
 
-                        String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-                        if (hasPhone.equalsIgnoreCase("1")) {
-                            hasPhone = "true";
-                        } else {
-                            hasPhone = "false";
-                        }
-
-                        if (Boolean.parseBoolean(hasPhone)) {
-                            Cursor phones = getContentResolver().
-                                    query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                            null,
-                                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                            while (phones.moveToNext()) {
-                                phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            }
-                            phones.close();
-                        }
-
-                        Log.d("curs", name + "num" + phoneNumber);
-                    }
-                    c.close();
                 }
         }
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(imageStoragePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+
+        this.sendBroadcast(mediaScanIntent);
     }
 }
