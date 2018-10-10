@@ -24,7 +24,7 @@ import java.util.Locale;
 public class CameraUtils {
 
     // Gallery directory name to store the images or videos
-    private static final String GALLERY_DIRECTORY_NAME = "Camera Demo";
+    public static final String GALLERY_DIRECTORY_NAME = "Camera Demo";
 
     // key to store image path in savedInstance state
     public static final String KEY_IMAGE_STORAGE_PATH = "image_path";

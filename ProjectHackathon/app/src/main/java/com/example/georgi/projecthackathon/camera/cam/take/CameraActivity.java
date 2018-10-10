@@ -23,7 +23,6 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        Intent intent = getIntent();
 
         Camera deviceCamera = Camera.open();
 
@@ -35,8 +34,8 @@ public class CameraActivity extends AppCompatActivity {
         deviceCamera.takePicture(
                 null,
                 null,
-                (data, camera) -> {
-                        Toast.makeText(CameraActivity.this, "Photo captured", Toast.LENGTH_LONG).show();
-                });
+                (data, camera) ->
+                        Toast.makeText(CameraActivity.this,
+                                "Photo captured", Toast.LENGTH_LONG).show());
     }
 }

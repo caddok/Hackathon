@@ -1,3 +1,4 @@
+/*
 package com.example.georgi.projecthackathon.contacts.models;
 
 import android.app.Activity;
@@ -41,36 +42,8 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(resultCode == Activity.RESULT_OK) {
-            Uri contactData = data.getData();
-            Cursor c = getContentResolver().query(contactData, null, null, null,null);
-            if (c.moveToFirst()) {
-                String phoneNumber = "";
-                String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
 
-                String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-                if (hasPhone.equalsIgnoreCase("1")){
-                    hasPhone = "true";
-                } else {
-                    hasPhone = "false";
-                }
-
-                if (Boolean.parseBoolean(hasPhone)){
-                    Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                    while(phones.moveToNext()){
-                        phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    }
-                    phones.close();
-                }
-
-                tvname.setText("Name: " + name);
-                tvphone.setText("Phone: " + phoneNumber);
-
-                Log.d("curs", name + "num" + phoneNumber);
-            }
-            c.close();
         }
     }
 }
+*/
